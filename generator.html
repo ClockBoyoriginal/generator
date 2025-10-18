@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор Бессмысленных Идей</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(45deg, #ffafbd, #ffc3a0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 700px;
+        }
+
+        h1 {
+            color: #ff6b6b;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 0px #ffe66d;
+        }
+
+        .idea-box {
+            background-color: #ffe66d;
+            border: 3px dashed #ff6b6b;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            font-size: 1.4em;
+            line-height: 1.5;
+            min-height: 60px;
+            transition: all 0.3s ease;
+        }
+
+        .rating-section {
+            margin: 20px 0;
+        }
+
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .star {
+            font-size: 2.5em;
+            cursor: pointer;
+            color: #ddd;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .star:hover {
+            transform: scale(1.2);
+        }
+
+        .star.active {
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .rating-text {
+            font-size: 1.1em;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        button {
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            min-width: 200px;
+        }
+
+        #generateBtn {
+            background-color: #4ecdc4;
+        }
+
+        #generateBtn:hover {
+            background-color: #45b8b0;
+            transform: scale(1.05);
+        }
+
+        #shareBtn {
+            background-color: #ff6b6b;
+        }
+
+        #shareBtn:hover {
+            background-color: #e55a5a;
+            transform: scale(1.05);
+        }
+
+        #shareBtn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .top-ideas {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .top-ideas h3 {
+            color: #ff6b6b;
+            border-bottom: 2px solid #ffe66d;
+            padding-bottom: 10px;
+        }
+
+        .idea-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .idea-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .idea-text {
+            flex: 1;
+            margin-right: 15px;
+        }
+
+        .idea-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .rating-star {
+            color: #ffd700;
+        }
+
+        .copy-area {
+            margin: 10px 0;
+            display: none;
+        }
+
+        #ideaText {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ff6b6b;
+            border-radius: 10px;
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+
+        #manualCopy {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .new-idea {
+            animation: pulse 0.5s ease;
+        }
+
+        .share-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4ecdc4;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes slideDown {
+            from {
+                top: -50px;
+                opacity: 0;
+            }
+            to {
+                top: 20px;
+                opacity: 1;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Генератор Бессмысленных Идей™</h1>
+        <div id="ideaDisplay" class="idea-box">
+            Нажмите кнопку, чтобы получить вдохновение для ничегонеделания!
+        </div>
+        
+        <div class="rating-section">
+            <div class="stars">
+                <div class="star" data-rating="1">★</div>
+                <div class="star" data-rating="2">★</div>
+                <div class="star" data-rating="3">★</div>
+                <div class="star" data-rating="4">★</div>
+                <div class="star" data-rating="5">★</div>
+            </div>
+            <div class="rating-text" id="ratingText">Оцените эту бессмысленную идею!</div>
+        </div>
+
+        <div class="buttons">
+            <button id="generateBtn">Сгенерировать идею!</button>
+            <button id="shareBtn" disabled>Поделиться идеей</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="totalIdeas">0</div>
+                <div class="stat-label">Всего идей</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="averageRating">0.0</div>
+                <div class="stat-label">Средний рейтинг</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="ratedIdeas">0</div>
+                <div class="stat-label">Оцененных идей</div>
+            </div>
+        </div>
+
+        <div id="copyArea" class="copy-area">
+            <textarea id="ideaText" rows="3" readonly></textarea>
+            <button id="manualCopy">Скопировать текст вручную</button>
+        </div>
+
+        <div class="top-ideas">
+            <h3>🏆 Топ-5 идей</h3>
+            <div id="topIdeasList"></div>
+        </div>
+    </div>
+
+    <div id="shareNotification" class="share-notification hidden">
+        Идея скопирована в буфер обмена! ✅
+    </div>
+
+    <script>
+        // База данных бессмысленных идей
+        const ideas = [
+            "Приложение, которое показывает случайную одушевлённую гифку из начала 2000-х.",
+            "Социальная сеть для комнатных растений, где они оценивают уход за собой.",
+            "Умная кружка, которая меняет цвет, когда напиток внутри достигает идеальной температуры для философских размышлений.",
+            "Подписка на ежемесячную посылку с воздухом из разных городов мира.",
+            "Бот, который генерирует оправдания, почему вы не ответили на сообщение.",
+            "Онлайн-курс по искусству правильно заваривать чайный пакетик.",
+            "Дрон, который летает за вами и создает эпический саундтрек для вашей прогулки до магазина.",
+            "Ежедневник, в котором можно планировать только отдых и перерывы.",
+            "Сервис по аренде котиков для Zoom-конференций.",
+            "Маска для сна со встроенным дисплеем, который показывает рекламу, пока вы спите.",
+            "Умная вилка, которая считает, не сколько вы съели, а сколько раз вы поднесли ко рту.",
+            "Гаджет, который преобразует храп в бит-музыку.",
+            "Приложение, которое заменяет все фотографии еды в инстаграме на фото пустых тарелок.",
+            "Умные носки, которые сообщают вам, когда они окончательно потеряются в стирке.",
+            "Блюдо, которое готовится ровно столько, сколько длится ваш любимый сериал.",
+            "Зеркало, которое каждое утро показывает вам случайного известного философа и его цитату.",
+            "Подушка с функцией записи и воспроизведения собственного храпа для лучшего засыпания.",
+            "Приложение, которое генерирует сложные пароли, которые невозможно запомнить, даже если очень постараться.",
+            "Фитнес-браслет, который считает не шаги, а количество раз, когда вы отказались от спонтанных покупок.",
+            "Умная шторка, которая автоматически закрывается, когда вы видите знакомого на улице и не хотите общаться."
+        ];
+
+        // Элементы DOM
+        const ideaDisplay = document.getElementById('ideaDisplay');
+        const generateBtn = document.getElementById('generateBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const stars = document.querySelectorAll('.star');
+        const ratingText = document.getElementById('ratingText');
+        const totalIdeasElement = document.getElementById('totalIdeas');
+        const averageRatingElement = document.getElementById('averageRating');
+        const ratedIdeasElement = document.getElementById('ratedIdeas');
+        const topIdeasList = document.getElementById('topIdeasList');
+        const shareNotification = document.getElementById('shareNotification');
+        const copyArea = document.getElementById('copyArea');
+        const ideaText = document.getElementById('ideaText');
+        const manualCopyBtn = document.getElementById('manualCopy');
+
+        // Состояние приложения
+        let currentIdea = '';
+        let currentIdeaIndex = -1;
+        let totalGenerated = 0;
+        let currentRating = 0;
+        let ratedIdeas = [];
+        let ideaRatings = new Array(ideas.length).fill(0);
+        let ideaVotes = new Array(ideas.length).fill(0);
+
+        // Функция для генерации случайной идеи
+        function generateIdea() {
+            const randomIndex = Math.floor(Math.random() * ideas.length);
+            currentIdeaIndex = randomIndex;
+            currentIdea = ideas[randomIndex];
+            ideaDisplay.textContent = currentIdea;
+            
+            // Обновляем счетчики
+            totalGenerated++;
+            totalIdeasElement.textContent = totalGenerated;
+            
+            // Активируем кнопку "Поделиться"
+            shareBtn.disabled = false;
+            
+            // Сбрасываем рейтинг для новой идеи
+            resetRating();
+            
+            // Скрываем область ручного копирования
+            copyArea.style.display = 'none';
+            
+            // Добавляем анимацию
+            ideaDisplay.classList.add('new-idea');
+            setTimeout(() => {
+                ideaDisplay.classList.remove('new-idea');
+            }, 500);
+
+            // Обновляем статистику
+            updateStats();
+        }
+
+        // Сброс рейтинга
+        function resetRating() {
+            currentRating = 0;
+            stars.forEach(star => star.classList.remove('active'));
+            ratingText.textContent = 'Оцените эту бессмысленную идею!';
+        }
+
+        // Установка рейтинга
+        function setRating(rating) {
+            currentRating = rating;
+            
+            // Обновляем звезды
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+
+            // Обновляем текст рейтинга
+            const ratingTexts = [
+                'Ужасно бессмысленно!',
+                'Слабая бессмысленность',
+                'Нормально бессмысленно',
+                'Хорошо бессмысленно!',
+                'Идеально бессмысленно! 🎉'
+            ];
+            ratingText.textContent = ratingTexts[rating - 1] || 'Оцените эту бессмысленную идею!';
+
+            // Сохраняем рейтинг
+            if (currentIdeaIndex !== -1 && rating > 0) {
+                // Обновляем рейтинг в массиве
+                const currentTotalRating = ideaRatings[currentIdeaIndex] * ideaVotes[currentIdeaIndex];
+                ideaVotes[currentIdeaIndex]++;
+                ideaRatings[currentIdeaIndex] = (currentTotalRating + rating) / ideaVotes[currentIdeaIndex];
+
+                // Добавляем в список оцененных идей если еще нет
+                if (!ratedIdeas.includes(currentIdeaIndex)) {
+                    ratedIdeas.push(currentIdeaIndex);
+                }
+
+                // Обновляем статистику
+                updateStats();
+            }
+        }
+
+        // Обновление статистики
+        function updateStats() {
+            // Общее количество оцененных идей
+            ratedIdeasElement.textContent = ratedIdeas.length;
+
+            // Средний рейтинг
+            const totalRated = ratedIdeas.length;
+            if (totalRated > 0) {
+                const totalRating = ratedIdeas.reduce((sum, index) => sum + ideaRatings[index], 0);
+                const average = totalRating / totalRated;
+                averageRatingElement.textContent = average.toFixed(1);
+            } else {
+                averageRatingElement.textContent = '0.0';
+            }
+
+            // Обновляем топ идей
+            updateTopIdeas();
+        }
+
+        // Обновление списка топ идей
+        function updateTopIdeas() {
+            // Создаем массив идей с рейтингами
+            const ideasWithRatings = ideas.map((idea, index) => ({
+                text: idea,
+                rating: ideaRatings[index],
+                votes: ideaVotes[index]
+            }));
+
+            // Фильтруем и сортируем по рейтингу
+            const topIdeas = ideasWithRatings
+                .filter(idea => idea.votes > 0)
+                .sort((a, b) => b.rating - a.rating)
+                .slice(0, 5);
+
+            // Отображаем топ идей
+            if (topIdeas.length > 0) {
+                topIdeasList.innerHTML = topIdeas.map((idea, index) => `
+                    <div class="idea-item">
+                        <div class="idea-text">${idea.text}</div>
+                        <div class="idea-rating">
+                            <span class="rating-star">★</span>
+                            <span>${idea.rating.toFixed(1)}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                topIdeasList.innerHTML = '<p style="text-align: center; color: #666;">Пока нет оцененных идей</p>';
+            }
+        }
+
+        // Функция для поделиться идеей
+        function shareIdea() {
+            if (!currentIdea) return;
+
+            const shareText = `Моя бессмысленная идея: "${currentIdea}"\n\nСгенерировано на Генераторе Бессмысленных Идей™`;
+
+            // Пробуем использовать современный API
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Моя бессмысленная идея',
+                    text: shareText,
+                    url: window.location.href
+                }).catch(err => {
+                    console.log('Ошибка sharing:', err);
+                    tryClipboardCopy(shareText);
+                });
+            } else {
+                tryClipboardCopy(shareText);
+            }
+        }
+
+        // Пробуем разные способы копирования
+        function tryClipboardCopy(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showShareNotification();
+                }).catch(err => {
+                    console.error('Clipboard API error:', err);
+                    showManualCopy(text);
+                });
+            } else {
+                showManualCopy(text);
+            }
+        }
+
+        // Показать поле для ручного копирования
+        function showManualCopy(text) {
+            ideaText.value = text;
+            copyArea.style.display = 'block';
+            ideaText.select();
+            showShareNotification();
+        }
+
+        // Ручное копирование
+        function manualCopy() {
+            ideaText.select();
+            document.execCommand('copy');
+            showShareNotification();
+        }
+
+        // Показать уведомление
+        function showShareNotification() {
+            shareNotification.classList.remove('hidden');
+            setTimeout(() => {
+                shareNotification.classList.add('hidden');
+            }, 2000);
+        }
+
+        // Инициализация событий
+        function initEvents() {
+            generateBtn.addEventListener('click', generateIdea);
+            shareBtn.addEventListener('click', shareIdea);
+            manualCopyBtn.addEventListener('click', manualCopy);
+
+            // События для звезд рейтинга
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const rating = parseInt(star.getAttribute('data-rating'));
+                    setRating(rating);
+                });
+
+                star.addEventListener('mouseover', () => {
+                    const rating = parseInt(star.getAttribute('data-rating'));
+                    stars.forEach((s, index) => {
+                        if (index < rating) {
+                            s.style.color = '#ffd700';
+                        } else {
+                            s.style.color = '#ddd';
+                        }
+                    });
+                });
+
+                star.addEventListener('mouseout', () => {
+                    stars.forEach((s, index) => {
+                        if (index < currentRating) {
+                            s.style.color = '#ffd700';
+                        } else {
+                            s.style.color = '#ddd';
+                        }
+                    });
+                });
+            });
+        }
+
+        // Инициализация при загрузке
+        function init() {
+            initEvents();
+            generateIdea();
+            updateStats();
+            console.log('Генератор бессмысленных идей с рейтингом загружен!');
+        }
+
+        // Запускаем приложение
+        init();
+    </script>
+</body>
+</html>
